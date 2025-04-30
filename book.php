@@ -27,7 +27,7 @@ while ($row = $category_result->fetch_assoc()) {
 // Fetch books grouped by category with pagination and search
 $book_by_category = [];
 foreach ($categories as $category) {
-    $query = "SELECT book.book_id, book.title, book.author, book.category, 
+    $query = "SELECT book.book_id, book.title, book.author, book.isbn, book.category, 
           CASE 
               WHEN EXISTS (SELECT 1 FROM borrow WHERE borrow.book_id = book.book_id AND borrow.status = 'borrowed') 
               THEN 'Borrowed' 
@@ -150,6 +150,7 @@ $totalPages = ceil($totalBooks / $limit);
                                 <th>🆔 Book ID</th> <!-- Added Book ID column -->
                                 <th>📖 Title</th>
                                 <th>✍ Author</th>
+                                <th>📂 ISBN</th>
                                 <th>📂 Category</th>
                                 <th>📌 QR Code</th>
                                 <th>📌 Status</th>
@@ -170,6 +171,7 @@ $totalPages = ceil($totalBooks / $limit);
                                     <td><?= htmlspecialchars($book['book_id']); ?></td> <!-- Display Book ID -->
                                     <td><?= htmlspecialchars($book['title']); ?></td>
                                     <td><?= htmlspecialchars($book['author']); ?></td>
+                                    <td><?= htmlspecialchars($book['isbn']); ?></td>
                                     <td><?= htmlspecialchars($book['category']); ?></td>
                                     <td>
                                         <img src="<?= $qr_file; ?>" width="80">

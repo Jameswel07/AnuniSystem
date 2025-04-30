@@ -76,61 +76,85 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Borrow Book</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #f8f9fa;
+        }
+        .card {
+            border-radius: 1rem;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+        }
+        .form-label {
+            font-weight: 600;
+        }
+        input:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+        }
+    </style>
 </head>
-<body class="bg-light">
-<div class="container mt-5">
-    <h3>📚 Borrow Book</h3>
-    <a href="dashboard.php" class="btn btn-secondary mb-3">⬅ Back</a>
-    <?php if (isset($_SESSION['success'])): ?>
-        <div class="alert alert-success"><?= $_SESSION['success']; unset($_SESSION['success']); ?></div>
-    <?php elseif (isset($_SESSION['error'])): ?>
-        <div class="alert alert-danger"><?= $_SESSION['error']; unset($_SESSION['error']); ?></div>
-    <?php endif; ?>
+<body>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card p-4 bg-white">
+                <h4 class="mb-3 text-primary"><i class="bi bi-box-arrow-in-down"></i> Borrow Book</h4>
+                <a href="dashboard.php" class="btn btn-outline-secondary mb-3">⬅ Back to Dashboard</a>
 
-    <form method="POST">
-        <div class="mb-3">
-            <label>Scan Student QR Code (Firstname Lastname):</label>
-            <input type="text" name="student_name" id="student_name" class="form-control" required read only>
+                <?php if (isset($_SESSION['success'])): ?>
+                    <div class="alert alert-success"><?= $_SESSION['success']; unset($_SESSION['success']); ?></div>
+                <?php elseif (isset($_SESSION['error'])): ?>
+                    <div class="alert alert-danger"><?= $_SESSION['error']; unset($_SESSION['error']); ?></div>
+                <?php endif; ?>
+
+                <form method="POST" autocomplete="off">
+                    <div class="mb-3">
+                        <label for="student_name" class="form-label">🎓 Scan Student QR Code:</label>
+                        <input type="text" name="student_name" id="student_name" class="form-control" placeholder="Firstname Lastname" required autofocus>
+                    </div>
+                    <div class="mb-3">
+                        <label for="book_id" class="form-label">📘 Scan Book QR Code:</label>
+                        <input type="text" name="book_id" id="book_id" class="form-control" placeholder="Book ID" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100"><i class="bi bi-check-circle"></i> Borrow Book</button>
+                </form>
+            </div>
         </div>
-        <div class="mb-3">
-            <label>Scan Book QR Code (Book ID):</label>
-            <input type="text" name="book_id" id="book_id" class="form-control" required read only>
-        </div>
-        <button class="btn btn-primary w-100" type="submit">📖 Borrow</button>
-    </form>
+    </div>
 </div>
 
-<script>
-    document.addEventListener("keydown", function(event) {
-        let activeInput = document.activeElement;
-        if (activeInput && activeInput.tagName === "INPUT") return;
+<!-- Bootstrap Icons CDN -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
+<script>
+let buffer = '';
+let lastTime = 0;
+
+document.addEventListener('keypress', function (e) {
+    const now = new Date().getTime();
+    if (now - lastTime > 100) buffer = '';
+    buffer += e.key;
+    lastTime = now;
+
+    if (e.key === 'Enter') {
         const studentInput = document.getElementById('student_name');
         const bookInput = document.getElementById('book_id');
 
-        let buffer = '';
-        let lastTime = 0;
-
-        document.addEventListener('keypress', function (e) {
-            const now = new Date().getTime();
-            if (now - lastTime > 100) buffer = '';
-            buffer += e.key;
-            lastTime = now;
-
-            if (e.key === 'Enter') {
-                if (!studentInput.value) {
-                    studentInput.value = buffer.trim();
-                } else if (!bookInput.value) {
-                    bookInput.value = buffer.trim();
-                }
-                buffer = '';
-            }
-        });
-    });
+        if (!studentInput.value) {
+            studentInput.value = buffer.trim();
+            bookInput.focus();
+        } else if (!bookInput.value) {
+            bookInput.value = buffer.trim();
+        }
+        buffer = '';
+        e.preventDefault();
+    }
+});
 </script>
 </body>
 </html>

@@ -15,16 +15,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $title = trim($_POST['title']);
     $author = trim($_POST['author']);
     $category = trim($_POST['category']);
+    $isbn = trim($_POST['isbn']); // Capture the ISBN
+    $available_copies = trim($_POST['available_copies']); // Capture the available copies
     $status = "Available";
     
-    if (!empty($title) && !empty($author) && !empty($category)) {
-        $book_data =    "Title: $title | Author: $author | Category: $category";
+    if (!empty($title) && !empty($author) && !empty($category) && !empty($isbn) && !empty($available_copies) && is_numeric($available_copies) && $available_copies >= 0) {
+        // Book data with ISBN and available copies
+        $book_data = "Title: $title | Author: $author | Category: $category | ISBN: $isbn";
         $qr_file = "qrcodes/" . uniqid() . ".png";
 
         QRcode::png($book_data, $qr_file, QR_ECLEVEL_L, 5);
 
-        $stmt = $conn->prepare("INSERT INTO book (title, author, category, qr_code) VALUES (?, ?, ?, ?)");
-        $stmt->bind_param("ssss", $title, $author, $category, $qr_file);
+        // Insert book including ISBN and available copies
+        $stmt = $conn->prepare("INSERT INTO book (title, author, category, isbn, available_copies, qr_code) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("ssssds", $title, $author, $category, $isbn, $available_copies, $qr_file);
 
         if ($stmt->execute()) {
             $_SESSION['success'] = "📚 Book added successfully!";
@@ -32,12 +36,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['error'] = "⚠️ Failed to add book.";
         }
     } else {
-        $_SESSION['error'] = "⚠️ All fields are required!";
+        $_SESSION['error'] = "⚠️ All fields are required and available copies must be a valid number!";
     }
 
     header("Location: book.php");
     exit();
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -83,7 +88,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <!-- Sidebar -->
 <div class="sidebar">
-    <h4 class="text-center">📚 KNHS LS<</h4>
+    <h4 class="text-center">📚 KNHS LS</h4>
     <a href="dashboard.php">📊 Dashboard</a>
     <a href="book.php">📖 Manage Books</a>
     <a href="student_list.php">🎓 Manage Students</a>
@@ -123,6 +128,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <option value="Mathematics">Mathematics</option>
                         <option value="History">History</option>
                     </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">📚 ISBN:</label>
+                    <input type="text" name="isbn" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">📦 Available Copies:</label>
+                    <input type="number" name="available_copies" class="form-control" required min="0" value="0">
                 </div>
                 <button type="submit" class="btn btn-primary w-100">➕ Add Book</button>
             </form>

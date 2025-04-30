@@ -80,6 +80,7 @@ if ($overdue > 0 && $penalty < 10) {
         <a href="student_list.php">🎓 Manage Students</a>
         <a href="borrow_book.php">📥 Borrow Books</a>
         <a href="return_book.php">📤 Return Books</a>
+        <a href="inventory_reports.php">📊 Inventory Reports</a>
         <a href="about.php">ℹ️ About Us</a>
         <a href="logout.php" class="text-danger">🚪 Logout</a>
     </div>

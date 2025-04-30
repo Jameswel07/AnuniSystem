@@ -34,7 +34,7 @@
 
         <h4 class="mt-4">🛠️ System Purpose</h4>
         <p>
-            This system automates library tasks such as book cataloging, student management, book borrowing, and returning using the scanner can scan Qr Code. It enhances the speed and accuracy of library transactions, reduces manual work, and ensures proper book tracking.
+            This system automates library tasks such as book cataloging, student management, book borrowing, and returning using qr code . It enhances the speed and accuracy of library transactions, reduces manual work, and ensures proper book tracking.
         </p>
 
         <h4 class="mt-4">📍 Location</h4>

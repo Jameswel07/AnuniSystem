@@ -119,6 +119,7 @@ $total_pages = ceil($total_students / $records_per_page);
         <div class="container">
             <h2 class="text-left-side">🎓 Student List</h2>
             <a href="add_student.php" class="btn btn-success mb-3">➕ Add Student</a>
+            <a href="student_catalog.php" class="btn btn-warning mb-3">Student</a>
             <a href="dashboard.php" class="btn btn-dark mb-3">⬅ Back</a>
 
             <?php if (isset($_SESSION['success'])): ?>
